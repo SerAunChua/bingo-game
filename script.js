@@ -27,6 +27,8 @@ board.push({ value: numbers[i], marked: false });
     cell.addEventListener("click", () => {
       if (gameOver) return;
 
+      playClickSound();
+      
       board[i].marked = !board[i].marked;
       cell.classList.toggle("marked");
 
@@ -75,6 +77,8 @@ function checkWinner() {
 
     if (isWinner) {
       gameOver = true;
+
+      playClickSound();
       
       highlightWinningCells(pattern);
       drawWinningLine(pattern);
@@ -175,4 +179,49 @@ function startConfetti() {
   setTimeout(() => {
     confettiContainer.innerHTML = "";
   }, 5000);
+}
+
+function playClickSound() {
+  const audioContext = new AudioContext();
+
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+
+  gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.15);
+}
+
+function playWinSound() {
+  const audioContext = new AudioContext();
+
+  const notes = [523, 659, 784, 1046];
+
+  notes.forEach((frequency, index) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime + index * 0.15);
+
+    gainNode.gain.setValueAtTime(0.18, audioContext.currentTime + index * 0.15);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + index * 0.15 + 0.18
+    );
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start(audioContext.currentTime + index * 0.15);
+    oscillator.stop(audioContext.currentTime + index * 0.15 + 0.18);
+  });
 }
