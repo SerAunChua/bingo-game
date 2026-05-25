@@ -201,27 +201,43 @@ function playClickSound() {
 }
 
 function playWinSound() {
-  const audioContext = new AudioContext();
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 
-  const notes = [523, 659, 784, 1046];
+  if (!AudioContextClass) {
+    return;
+  }
 
-  notes.forEach((frequency, index) => {
-    const oscillator = audioContext.createOscillator();
+  const audioContext = new AudioContextClass();
+
+  for (let i = 0; i < 50; i++) {
+    const bufferSize = audioContext.sampleRate * 0.08;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let j = 0; j < bufferSize; j++) {
+      data[j] = Math.random() * 2 - 1;
+    }
+
+    const noise = audioContext.createBufferSource();
+    noise.buffer = buffer;
+
     const gainNode = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
 
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime + index * 0.15);
+    filter.type = "bandpass";
+    filter.frequency.value = 1000 + Math.random() * 2000;
 
-    gainNode.gain.setValueAtTime(0.18, audioContext.currentTime + index * 0.15);
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.001,
-      audioContext.currentTime + index * 0.15 + 0.18
-    );
+    const startTime = audioContext.currentTime + Math.random() * 1.8;
 
-    oscillator.connect(gainNode);
+    gainNode.gain.setValueAtTime(0.001, startTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.35, startTime + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.08);
+
+    noise.connect(filter);
+    filter.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    oscillator.start(audioContext.currentTime + index * 0.15);
-    oscillator.stop(audioContext.currentTime + index * 0.15 + 0.18);
-  });
+    noise.start(startTime);
+    noise.stop(startTime + 0.09);
+  }
 }
