@@ -78,7 +78,7 @@ function checkWinner() {
     if (isWinner) {
       gameOver = true;
 
-      playClickSound();
+      playWinSound();
       
       highlightWinningCells(pattern);
       drawWinningLine(pattern);
