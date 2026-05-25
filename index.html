@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bingo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="bingo-title">
+  <span class="letter b">B</span>
+  <span class="letter i">I</span>
+  <span class="letter n">N</span>
+  <span class="letter g">G</span>
+  <span class="letter o">O</span>
+</div>
+
+    <div class="board-wrapper">
+  <div id="bingoBoard" class="bingo-board"></div>
+  <div id="winningLine" class="winning-line"></div>
+</div>
+
+    <button onclick="generateBoard()">New Game</button>
+
+    <div id="confettiContainer" class="confetti-container"></div>
+    
+    <div id="winPopup" class="win-popup">
+  <div class="win-box">
+    <h2>BINGO!</h2>
+    <p>You won!</p>
+    <button id="okButton">OK</button>
+  </div>
+</div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
