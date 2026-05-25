@@ -126,16 +126,22 @@ function drawWinningLine(pattern) {
 
   const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 
-  // 這裡控制紅線多長
+  // 控制紅線左右延長多少
   const extraLength = 35;
 
   const startX = x1 - Math.cos(angleRad) * extraLength;
   const startY = y1 - Math.sin(angleRad) * extraLength;
 
+  // 控制紅線厚度，這個數字要跟 CSS 的 height 一樣
+  const lineThickness = 10;
+
   winningLine.style.display = "block";
   winningLine.style.width = distance + extraLength * 2 + "px";
   winningLine.style.left = startX + "px";
-  winningLine.style.top = startY + "px";
+
+  // 重點：減掉紅線厚度的一半，讓線條中心對準格子中心
+  winningLine.style.top = startY - lineThickness / 2 + "px";
+
   winningLine.style.transform = `rotate(${angleDeg}deg)`;
 }
 
